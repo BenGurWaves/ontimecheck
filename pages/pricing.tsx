@@ -1,9 +1,6 @@
 import Link from 'next/link';
 import StripeCheckout from '@/components/StripeCheckout';
 
-import Link from 'next/link';
-import StripeCheckout from '@/components/StripeCheckout';
-
 export default function Pricing() {
   return (
     <div className="magazine-grid mt-12 mb-16">
@@ -29,22 +26,14 @@ export default function Pricing() {
               <p className="text-sm text-muted">or $49/year (save 30%)</p>
             </div>
             <div className="space-y-2">
-              <StripeCheckout
-                priceId="price_monthly_pro"
-                mode="subscription"
-                planName="Pro Monthly"
-              />
-              <StripeCheckout
-                priceId="price_yearly_pro"
-                mode="subscription"
-                planName="Pro Yearly"
-              />
+              <div className="btn-glow"><span>Pro Monthly</span></div>
+              <div className="btn-glow"><span>Pro Yearly</span></div>
             </div>
           </div>
         </div>
 
         <div className="mt-8">
-          <Link href="/" className="btn-glow"><span>← Back to Home</span></Link>
+          <a href="/" className="btn-glow"><span>← Back to Home</span></a>
         </div>
       </div>
     </div>

@@ -1,7 +1,5 @@
 import Link from 'next/link';
 
-import Link from 'next/link';
-
 export default function About() {
   return (
     <div className="magazine-grid mt-12 mb-16">
@@ -20,7 +18,7 @@ export default function About() {
           </p>
         </div>
         <div className="mt-8">
-          <Link href="/" className="btn-glow"><span>← Back to Home</span></Link>
+          <a href="/" className="btn-glow"><span>← Back to Home</span></a>
         </div>
       </div>
     </div>
