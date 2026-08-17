@@ -1,6 +1,6 @@
 export default function PricingTeaser() {
   return (
-    <section className="bg-gray-800 rounded-lg p-6 mb-8">
+    <section className="motion-card">
       <h2 className="text-lg font-medium mb-4">Get More Insights with OnTimeCheck Pro</h2>
       <p className="text-sm text-gray-300 mb-4">
         Free tier includes unlimited searches and up to 3 watched items. Upgrade for unlimited watched items,

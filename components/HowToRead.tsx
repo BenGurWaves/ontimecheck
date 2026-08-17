@@ -1,6 +1,6 @@
 export default function HowToRead() {
   return (
-    <section className="bg-gray-800 rounded-lg p-6 mb-8">
+    <section className="motion-card">
       <h2 className="text-lg font-medium mb-4">How to Read On-Time Performance Data</h2>
       <div className="space-y-4 text-sm text-gray-300">
         <p>

@@ -10,6 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ontimecheck.calyvent.com';
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -19,8 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       ],
       mode: mode || 'subscription',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/pricing`,
       allow_promotion_codes: true,
     });
 

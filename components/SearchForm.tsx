@@ -84,11 +84,7 @@ export default function SearchForm({ onSearch }: { onSearch: (results: any, type
       <div className="flex flex-col sm:flex-row gap-4">
         <button
           onClick={() => setMode('airline')}
-          className={`flex-1 px-4 py-3 rounded-lg font-medium text-sm transition-colors ${
-            mode === 'airline'
-              ? 'bg-accent-green text-background'
-              : 'bg-gray-800 hover:bg-gray-700 text-white'
-          }`}
+          className={`flex-1 px-4 py-3 font-medium text-sm transition-colors border ${mode === 'airline' ? 'bg-accent text-white' : 'border-line'}`}
         >
           By Airline
         </button>
