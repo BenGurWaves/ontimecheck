@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Allow AI bots
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+
+# Disallow admin and private paths
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /auth/
+
+Sitemap: https://ontimecheck.calyvent.com/sitemap.xml
