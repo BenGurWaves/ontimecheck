@@ -26,33 +26,40 @@ export default function Home() {
       <meta property="og:description" content="Lookup historical on-time performance from BTS official data." />
       <meta property="og:url" content="https://ontimecheck.calyvent.com/" />
     </Head>
-    <main>
-      <section className="hero">
-        <div className="magazine-grid">
-          <div>
-            <h1>See which airline actually shows up on time.</h1>
-            <p className="mt-4">Official DOT data, updated monthly. Compare airlines or a specific route without the marketing.</p>
-          </div>
-        </div>
-      </section>
-      <section className="magazine-grid">
-        <div className="card">
-          <SearchForm onSearch={handleSearch} />
-        </div>
-      </section>
-      {searchResults && (
-        <section className="magazine-grid">
+    <div className="split">
+      <nav>
+        <div className="brand">ONTIME</div>
+        <div className="tag">Bureau of Transportation Statistics</div>
+        <div style={{marginTop:'auto', fontSize:'12px', color:'var(--muted)'}}>Data lag ~3 months</div>
+      </nav>
+      <div className="main">
+    <section className="hero-aw">
+      <h1>See which airline actually shows up on time.</h1>
+      <div className="sub">Official DOT • Updated monthly</div>
+    </section>
+    <div className="grid-aw">
+      <div className="big motion-card">
+        <SearchForm onSearch={handleSearch} />
+      </div>
+      <div className="small motion-card">
+        <TrustSection />
+      </div>
+      <div className="big motion-card">
+        <HowToRead />
+      </div>
+      <div className="small motion-card">
+        <PricingTeaser />
+      </div>
+    </div>
+    {searchResults && (
+      <div className="grid-aw mt-8">
+        <div className="big reveal">
           <Results results={searchResults} type={searchType} />
-        </section>
-      )}
-      {!searchResults && (
-        <>
-          <section className="magazine-grid"><TrustSection /></section>
-          <section className="magazine-grid"><HowToRead /></section>
-          <section className="magazine-grid"><PricingTeaser /></section>
-        </>
-      )}
-    </main>
+        </div>
+      </div>
+    )}
+      </div>
+    </div>
     </>
   );
 }

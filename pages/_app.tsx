@@ -3,13 +3,27 @@ import Head from 'next/head';
 import Footer from '@/components/Footer';
 import '@/styles/globals.css';
 import { Fraunces, Inter } from 'next/font/google';
+import { useEffect } from 'react';
 
 const display = Fraunces({ subsets: ['latin'], weight: ['600','700'] });
 const body = Inter({ subsets: ['latin'], weight: ['400','500'] });
 
+function CustomCursor() {
+  useEffect(() => {
+    const el = document.createElement('div');
+    el.className = 'cursor';
+    document.body.appendChild(el);
+    const move = (e: MouseEvent) => { el.style.left = e.clientX+'px'; el.style.top = e.clientY+'px'; };
+    window.addEventListener('mousemove', move);
+    return () => { window.removeEventListener('mousemove', move); el.remove(); };
+  }, []);
+  return null;
+}
+
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className={`${display.className} ${body.className}`}>
+      <CustomCursor />
       <Head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
