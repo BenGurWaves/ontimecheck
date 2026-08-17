@@ -1,8 +1,8 @@
 export default function HowToRead() {
   return (
-    <section className="motion-card">
-      <h2 className="text-lg font-medium mb-4">How to Read On-Time Performance Data</h2>
-      <div className="space-y-4 text-sm text-gray-300">
+    <div>
+      <h2 className="text-2xl font-semibold mb-3">How to read</h2>
+      <div className="text-muted space-y-3">
         <p>
           On-time percentage reflects the proportion of flights that arrived or departed within 15 minutes of the scheduled time.
         </p>
