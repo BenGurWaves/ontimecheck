@@ -16,6 +16,6 @@ export default function HowToRead() {
           Delay causes are categorized by the Bureau of Transportation Statistics into carrier-controllable (maintenance, crew, etc.), weather, national air system (air traffic control), and late-arriving aircraft.
         </p>
       </div>
-    </section>
+    </div>
   );
 }
