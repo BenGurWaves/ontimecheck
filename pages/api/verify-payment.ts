@@ -1,4 +1,26 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import Stripe from 'stripe';
+
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
+export const runtime = 'edge';
+
+let stripeClient: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!stripeClient) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+      throw new Error('STRIPE_SECRET_KEY is not set.');
+    }
+    stripeClient = new Stripe(key);
+  }
+  return stripeClient;
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -8,8 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { sessionId } = req.body;
 
   try {
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-    
+    const stripe = getStripe();
+
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === 'paid') {

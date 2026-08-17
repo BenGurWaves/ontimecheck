@@ -1,15 +1,6 @@
 name = "ontimecheck"
 compatibility_date = "2024-01-01"
+pages_build_output_dir = ".vercel/output/static"
 
-[triggers]
-crons = []
-
-[[workers_dev_var]]
-name = "NEXT_PUBLIC_SUPABASE_URL"
-value = ""
-[[workers_dev_var]]
-name = "NEXT_PUBLIC_SUPABASE_ANON_KEY"
-value = ""
-[[workers_dev_var]]
-name = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-value = ""
+[vars]
+NEXT_PUBLIC_SITE_URL = "https://ontimecheck.pages.dev"
