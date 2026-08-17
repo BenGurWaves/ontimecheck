@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Head from 'next/head';
 import SearchForm from '@/components/SearchForm';
 import Results from '@/components/Results';
 import TrustSection from '@/components/TrustSection';
@@ -17,26 +18,41 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-6">
-          See which airline actually shows up on time.
-        </h1>
-        <p className="text-lg text-center text-gray-300 mb-8">
-          Official DOT data, updated monthly, by airline or specific route
-        </p>
-        <SearchForm onSearch={handleSearch} />
-        {searchResults && (
+    <>
+    <Head>
+      <title>OnTimeCheck — See which airline actually shows up on time</title>
+      <meta name="description" content="Official DOT on-time performance by airline and route. Historical data, delay causes, cancellation rates, updated monthly." />
+      <meta property="og:title" content="OnTimeCheck — Real on-time performance by airline and route" />
+      <meta property="og:description" content="Lookup historical on-time performance from BTS official data." />
+      <meta property="og:url" content="https://ontimecheck.calyvent.com/" />
+    </Head>
+    <main>
+      <section className="hero">
+        <div className="magazine-grid">
+          <div>
+            <h1>See which airline actually shows up on time.</h1>
+            <p className="mt-4">Official DOT data, updated monthly. Compare airlines or a specific route without the marketing.</p>
+          </div>
+        </div>
+      </section>
+      <section className="magazine-grid">
+        <div className="card">
+          <SearchForm onSearch={handleSearch} />
+        </div>
+      </section>
+      {searchResults && (
+        <section className="magazine-grid">
           <Results results={searchResults} type={searchType} />
-        )}
-        {!searchResults && (
-          <>
-            <TrustSection />
-            <HowToRead />
-            <PricingTeaser />
-          </>
-        )}
-      </div>
+        </section>
+      )}
+      {!searchResults && (
+        <>
+          <section className="magazine-grid"><TrustSection /></section>
+          <section className="magazine-grid"><HowToRead /></section>
+          <section className="magazine-grid"><PricingTeaser /></section>
+        </>
+      )}
     </main>
+    </>
   );
 }

@@ -1,0 +1,22 @@
+# OnTimeCheck
+
+OnTimeCheck is a lookup tool showing historical on-time performance, delay causes, and cancellation rates by airline and by specific route, sourced from the U.S. Bureau of Transportation Statistics official Airline On-Time Performance data.
+
+## Core value
+Real government-reported performance instead of marketing claims. Updated monthly with a ~3 month reporting lag.
+
+## Key pages
+- Home: https://ontimecheck.calyvent.com/
+- Pricing: https://ontimecheck.calyvent.com/pricing
+- About: https://ontimecheck.calyvent.com/about
+- Dashboard (auth required): https://ontimecheck.calyvent.com/dashboard
+
+## Search
+- By Airline: overall on-time %, cancellation rate, avg delay minutes, delay cause breakdown, 12-month trend
+- By Route: origin-destination pair, per-airline stats, best/worst carrier
+
+## Data source
+BTS Airline On-Time Performance Monthly Reporting. Aggregated on import, not live API.
+
+## Contact
+mailto:contact@calyvent.com?subject=OnTimeCheck%20Inquiry
