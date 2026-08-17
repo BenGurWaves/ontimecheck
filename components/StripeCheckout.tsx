@@ -1,9 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 interface StripeCheckoutProps {
   priceId: string;
@@ -23,14 +20,12 @@ export default function StripeCheckout({ priceId, mode, planName }: StripeChecko
         body: JSON.stringify({ priceId, mode }),
       });
 
-      const { url, sessionId } = await response.json();
+      const data = await response.json();
 
-      const stripe = await stripePromise;
-      const { error } = await stripe!.redirectToCheckout({ sessionId });
-
-      if (error) {
-        console.error(error);
-        alert('Something went wrong');
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Failed to create checkout session');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -44,7 +39,18 @@ export default function StripeCheckout({ priceId, mode, planName }: StripeChecko
     <button
       onClick={handleCheckout}
       disabled={loading}
-      className="inline-block px-6 py-3 rounded-lg bg-accent-green text-background font-medium text-sm hover:bg-accent-green-light transition-colors disabled:opacity-50"
+      style={{
+        display: 'inline-block',
+        padding: '0.75rem 1.5rem',
+        borderRadius: '0.5rem',
+        backgroundColor: '#C0FF00',
+        color: '#0A0A0F',
+        fontWeight: '500',
+        fontSize: '0.875rem',
+        border: 'none',
+        cursor: 'pointer',
+        opacity: loading ? 0.5 : 1
+      }}
     >
       {loading ? 'Processing...' : `Upgrade to ${planName}`}
     </button>
