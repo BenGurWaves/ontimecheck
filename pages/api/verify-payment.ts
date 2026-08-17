@@ -1,26 +1,14 @@
+// ─────────────────────────────────────────────────────────────
+//  OnTimeCheck — API: Verify Stripe payment status
+//  POST /api/verify-payment
+//  Body: { sessionId: "cs_..." }
+//
+//  Uses raw fetch to the Stripe REST API for Edge Runtime
+//  compatibility (the `stripe` npm package is Node-only).
+//  ─────────────────────────────────────────────────────────────
 import type { NextApiRequest, NextApiResponse } from 'next';
-import Stripe from 'stripe';
-
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
 
 export const runtime = 'edge';
-
-let stripeClient: Stripe | null = null;
-
-function getStripe(): Stripe {
-  if (!stripeClient) {
-    const key = process.env.STRIPE_SECRET_KEY;
-    if (!key) {
-      throw new Error('STRIPE_SECRET_KEY is not set.');
-    }
-    stripeClient = new Stripe(key);
-  }
-  return stripeClient;
-}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -29,15 +17,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { sessionId } = req.body;
 
-  try {
-    const stripe = getStripe();
+  if (!sessionId) {
+    return res.status(400).json({ success: false, error: 'sessionId is required' });
+  }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+  try {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+
+    if (!stripeKey) {
+      return res.status(500).json({ success: false, error: 'STRIPE_SECRET_KEY is not set' });
+    }
+
+    const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${stripeKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res.status(500).json({ success: false, error: `Stripe API error: ${response.status} ${errorText}` });
+    }
+
+    const session = await response.json();
 
     if (session.payment_status === 'paid') {
-      // Update user's subscription in Supabase
-      // This would update the user's record in your database
-      // For now, just return success
+      // Success — client can now unlock paid features
       res.status(200).json({ success: true, session });
     } else {
       res.status(400).json({ success: false, error: 'Payment not completed' });
