@@ -3,12 +3,10 @@ import StripeCheckout from '@/components/StripeCheckout';
 
 // ─────────────────────────────────────────────────────────────────
 //  Price IDs are intentionally hardcoded in source (not env vars).
-//  Replace with real Stripe price IDs after creating them in your
-//  Stripe Dashboard. — User instruction: "do that in the code not
-//  add it to variable"
-// ─────────────────────────────────────────────────────────────────
-const PRICE_MONTHLY = 'price_monthly_pro';   // ← replace with real price ID
-const PRICE_YEARLY = 'price_yearly_pro';     // ← replace with real price ID
+//  Created via Stripe API: $5/month (500¢) and $50/year (5000¢).
+//  ─────────────────────────────────────────────────────────────────
+const PRICE_MONTHLY = 'price_1U5cS8PRyQBaeqcXYrCG1xD6';
+const PRICE_YEARLY = 'price_1U5cS8PRyQBaeqcXb0QhbcUW';
 
 export default function Pricing() {
   return (
@@ -31,8 +29,8 @@ export default function Pricing() {
               Unlimited watched items, side-by-side comparisons (up to 4 airlines or routes), downloadable historical trend reports.
             </p>
             <div className="mb-4">
-              <p className="text-2xl font-bold">$5.99/month</p>
-              <p className="text-sm text-muted">or $49/year (save 30%)</p>
+              <p className="text-2xl font-bold">$5/month</p>
+              <p className="text-sm text-muted">or $50/year (save 17%)</p>
             </div>
             <div className="space-y-4">
               <StripeCheckout
