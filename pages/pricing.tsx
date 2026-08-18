@@ -1,6 +1,15 @@
 import Link from 'next/link';
 import StripeCheckout from '@/components/StripeCheckout';
 
+// ─────────────────────────────────────────────────────────────────
+//  Price IDs are intentionally hardcoded in source (not env vars).
+//  Replace with real Stripe price IDs after creating them in your
+//  Stripe Dashboard. — User instruction: "do that in the code not
+//  add it to variable"
+// ─────────────────────────────────────────────────────────────────
+const PRICE_MONTHLY = 'price_monthly_pro';   // ← replace with real price ID
+const PRICE_YEARLY = 'price_yearly_pro';     // ← replace with real price ID
+
 export default function Pricing() {
   return (
     <div className="magazine-grid mt-12 mb-16">
@@ -25,15 +34,25 @@ export default function Pricing() {
               <p className="text-2xl font-bold">$5.99/month</p>
               <p className="text-sm text-muted">or $49/year (save 30%)</p>
             </div>
-            <div className="space-y-2">
-              <div className="btn-glow"><span>Pro Monthly</span></div>
-              <div className="btn-glow"><span>Pro Yearly</span></div>
+            <div className="space-y-4">
+              <StripeCheckout
+                priceId={PRICE_MONTHLY}
+                mode="subscription"
+                planName="Pro Monthly"
+              />
+              <StripeCheckout
+                priceId={PRICE_YEARLY}
+                mode="subscription"
+                planName="Pro Yearly"
+              />
             </div>
           </div>
         </div>
 
         <div className="mt-8">
-          <a href="/" className="btn-glow"><span>← Back to Home</span></a>
+          <Link href="/" passHref legacyBehavior>
+            <a href="/" className="btn-glow"><span>← Back to Home</span></a>
+          </Link>
         </div>
       </div>
     </div>

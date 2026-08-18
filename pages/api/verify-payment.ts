@@ -3,53 +3,72 @@
 //  POST /api/verify-payment
 //  Body: { sessionId: "cs_..." }
 //
-//  Uses raw fetch to the Stripe REST API for Edge Runtime
-//  compatibility (the `stripe` npm package is Node-only).
+//  Uses raw fetch to the Stripe REST API for Edge Runtime compat.
 //  ─────────────────────────────────────────────────────────────
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 export const runtime = 'edge';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: Request) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { sessionId } = req.body;
-
-  if (!sessionId) {
-    return res.status(400).json({ success: false, error: 'sessionId is required' });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   try {
+    const body = await req.json();
+    const { sessionId } = body;
+
+    if (!sessionId) {
+      return new Response(JSON.stringify({ success: false, error: 'sessionId is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // PRIVATE key — server-side only
     const stripeKey = process.env.STRIPE_SECRET_KEY;
 
     if (!stripeKey) {
-      return res.status(500).json({ success: false, error: 'STRIPE_SECRET_KEY is not set' });
+      return new Response(JSON.stringify({ success: false, error: 'STRIPE_SECRET_KEY is not set' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+    const stripeResp = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${stripeKey}`,
       },
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(500).json({ success: false, error: `Stripe API error: ${response.status} ${errorText}` });
+    if (!stripeResp.ok) {
+      const errorText = await stripeResp.text();
+      return new Response(JSON.stringify({ success: false, error: `Stripe API error: ${stripeResp.status} ${errorText}` }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    const session = await response.json();
+    const session = await stripeResp.json();
 
     if (session.payment_status === 'paid') {
-      // Success — client can now unlock paid features
-      res.status(200).json({ success: true, session });
+      return new Response(JSON.stringify({ success: true, session }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
     } else {
-      res.status(400).json({ success: false, error: 'Payment not completed' });
+      return new Response(JSON.stringify({ success: false, error: 'Payment not completed' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
   } catch (error) {
     console.error('Verification error:', error);
-    res.status(500).json({ success: false, error: 'Verification failed' });
+    return new Response(JSON.stringify({ success: false, error: 'Verification failed' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

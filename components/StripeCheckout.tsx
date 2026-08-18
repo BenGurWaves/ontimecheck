@@ -25,7 +25,7 @@ export default function StripeCheckout({ priceId, mode, planName }: StripeChecko
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert('Failed to create checkout session');
+        alert('Failed to start checkout' + (data.error ? ': ' + data.error : ''));
       }
     } catch (error) {
       console.error('Checkout error:', error);
