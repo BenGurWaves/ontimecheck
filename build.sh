@@ -1,34 +1,20 @@
 #!/bin/bash
 set -e
 
-# ─────────────────────────────────────────────────────────────
-#  OnTimeCheck — Cloudflare Pages build script
+# OnTimeCheck Cloudflare Pages build script
 #
-#  Step 1: Next.js build (generates .next/)
-#  Step 2: @cloudflare/next-on-pages (generates .vercel/output/static/)
-#  Step 3: Patch bare async_hooks → node:async_hooks in
-#          generated func.js bundles
-#
-#  Without step 3, API routes return 500 because Next.js/Turbopack
-#  emits `import "async_hooks"` (bare specifier) inside each edge
-#  function bundle. The Cloudflare Edge Runtime + nodejs_compat
-#  flag resolves `node:async_hooks` but NOT the bare `async_hooks`
-#  specifier, causing the dynamic import() in the Worker to throw.
-# ─────────────────────────────────────────────────────────────
+# Architecture:
+#   build.sh → @cloudflare/next-on-pages → npm run build → node scripts/run-build.js
+#   ↓
+#   @cloudflare/next-on-pages generates .vercel/output/ from .next/
+#   ↓
+#   scripts/patch-funcs.js patches bare async_hooks imports
 
-echo "🔧 Step 1: Building Next.js..."
-npm run build
-
-echo ""
-echo "🔧 Step 2: Converting to Cloudflare Pages format..."
+# Step 1: @cloudflare/next-on-pages runs `npm run build` internally
+# which calls node scripts/run-build.js (sets CI=false, runs npx next build)
 npx @cloudflare/next-on-pages
 
-echo ""
-echo "🔧 Step 3: Patching bare async_hooks imports..."
-find .vercel/output/static/_worker.js/__next-on-pages-dist__/ -name "*.func.js" -exec sed -i 's/from"async_hooks"/from"node:async_hooks"/g' {} +
+# Step 2: Patch bare async_hooks imports in generated func.js files
+node scripts/patch-funcs.js
 
-PATCHED=$(grep -rl 'from"node:async_hooks"' .vercel/output/static/_worker.js/__next-on-pages-dist__/ | wc -l)
-echo "  ✅ Patched $PATCHED func.js files"
-
-echo ""
-echo "🎉 Build complete — output in .vercel/output/static/"
+echo "✅ Build pipeline complete"

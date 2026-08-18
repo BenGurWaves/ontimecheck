@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npx @cloudflare/next-on-pages",
-    "postbuild": "node scripts/patch-funcs.js",
+    "build": "node scripts/run-build.js",
     "start": "next start",
     "lint": "eslint"
   },

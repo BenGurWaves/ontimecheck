@@ -1,16 +1,9 @@
 #!/usr/bin/env node
 /**
- * Patch bare `async_hooks` imports → `node:async_hooks` in generated
- * Cloudflare Pages function bundles.
+ * Patches bare `async_hooks` imports to `node:async_hooks` in all .func.js files.
  *
- * Why: Next.js/Turbopack emits `import "async_hooks"` (bare specifier)
- * inside each edge function .func.js file. The Cloudflare Edge Runtime
- * with the `nodejs_compat` flag resolves `node:async_hooks` but does NOT
- * resolve the bare `async_hooks` specifier. When the Worker's dynamic
- * import() tries to load a .func.js that has `import "async_hooks"`,
- * the module load fails → 500 Internal Server Error.
- *
- * This script fixes all .func.js files in the output directory.
+ * The Cloudflare Edge Runtime with `nodejs_compat` resolves `node:async_hooks`
+ * but NOT bare `async_hooks`. Generated .func.js files use bare imports.
  */
 const fs = require('fs');
 const path = require('path');
@@ -23,29 +16,22 @@ if (!fs.existsSync(distDir)) {
   process.exit(0);
 }
 
-// Find all .func.js files
-const output = execSync(`find ${distDir} -name "*.func.js"`, { encoding: 'utf8' }).trim();
-const files = output ? output.split('\n') : [];
-
-if (files.length === 0) {
-  console.log('⚠️  No .func.js files found — skipping patch');
-  process.exit(0);
-}
+const files = execSync(`find ${distDir} -name "*.func.js"`, { encoding: 'utf8' })
+  .trim().split('\n').filter(Boolean);
 
 let patched = 0;
 for (const file of files) {
   try {
     let content = fs.readFileSync(file, 'utf8');
-    const original = content;
+    const before = content;
     content = content.replace(/from"async_hooks"/g, 'from"node:async_hooks"');
-    if (content !== original) {
+    if (content !== before) {
       fs.writeFileSync(file, content);
       patched++;
-      console.log(`  ✓ Patched: ${path.relative(process.cwd(), file)}`);
     }
   } catch (e) {
     console.error(`  ✗ Error patching ${file}:`, e.message);
   }
 }
 
-console.log(`\n✅ Patched ${patched}/${files.length} func.js files (bare async_hooks → node:async_hooks)`);
+console.log(`  ✅ Patched ${patched}/${files.length} func.js files`);
