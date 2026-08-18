@@ -59,7 +59,7 @@ export default async function handler(req: Request) {
     if (!stripeResp.ok) {
       const errorText = await stripeResp.text();
       return new Response(JSON.stringify({ error: `Stripe API error: ${stripeResp.status} ${errorText}` }), {
-        status: 500,
+        status: stripeResp.status,
         headers: { 'Content-Type': 'application/json' },
       });
     }
